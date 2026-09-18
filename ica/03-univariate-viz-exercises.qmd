@@ -200,8 +200,10 @@ Quantitative variables require different viz than categorical variables. Especia
 
 Let's dig into some details.
 
--   How many hikes have an elevation between 4500 and 4700 feet?
+-   How many hikes have an elevation between 4500 and 4700 feet?'
+6 hikes
 -   How many total hikes have an elevation of at least 5100 feet?
+2 hikes
 
 #### Part b
 
@@ -214,6 +216,11 @@ Now the bigger picture. In general, histograms allow us to examine the following
 
 We must then *translate* this information into the *context* of our analysis, here hikes in the Adirondacks. Addressing each of the features in the above list, summarize below what you learned from the histogram, in context.
 
+```{r}
+hikes |>
+  summarize(mean(elevation), median(elevation), min(elevation), max(elevation))
+```
+The mean and median values are given. Both show that elevations are typically are around 4400 feet. The max and min are shown. The distribution is skewed slightly to the right, with fewer higher elevation peaks. There are no outliers. 
 
 
 ## Exercise 8: Building Histograms - Part 1
@@ -223,7 +230,6 @@ We must then *translate* this information into the *context* of our analysis, he
 ```{r}
 ggplot(hikes, aes(x = elevation))+
   geom_histogram()
-  
 ```
 
 
@@ -243,6 +249,7 @@ makes plot
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white") 
 ```
+makes outline color white
 
 ```{r}
 # COMMENT on the change in the code and the corresponding change in the plot
@@ -257,7 +264,7 @@ ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white") +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
-makes outline white
+makes outline white, adds better labels to axes
 
 ```{r}
 # COMMENT on the change in the code and the corresponding change in the plot
@@ -265,7 +272,7 @@ ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 1000) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
-changes bin width
+changes bin width to make bins larger
 
 ```{r}
 # COMMENT on the change in the code and the corresponding change in the plot
@@ -273,6 +280,7 @@ ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 5) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
+changes bin width to make bins smaller
 
 ```{r}
 # COMMENT on the change in the code and the corresponding change in the plot
@@ -280,16 +288,22 @@ ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 200) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
-
+makes bin width reasonable
 
 ## Exercise 10: Histogram Follow-up
 
 -   What function added the histogram layer / geometry?
+  geom_histogram()
 -   What's the difference between `color` and `fill`?
+  color changes the outline color, fill changes the fill color
 -   Why does adding `color = "white"` improve the visualization?
+  outlines the bins to distinguish their edges
 -   What did `binwidth` do?
+  changed the bin width
 -   Why does the histogram become ineffective if the `binwidth` is too big (eg, 1000 feet)?
+  all the peaks are lumped together into a few bins
 -   Why does the histogram become ineffective if the `binwidth` is too small (eg, 5 feet)?
+  all the peaks are separated, we dont put peaks that are similar elevations together
 
 
 ## Exercise 11: Density Plots
@@ -308,37 +322,43 @@ ggplot(hikes, aes(x = elevation)) +
 -   INTUITION CHECK: Before tweaking the code and thinking back to `geom_bar()` and `geom_histogram()`, how do you *anticipate* the following code will change the plot?
 
     -   `geom_density(color = "blue")`
+    Makes the curve blue
     -   `geom_density(fill = "orange")`
+    makes the area under the curve orange
 
 -   TRY IT! Test out those lines in the chunk below. Was your intuition correct?
 
 ```{r}
 # Write your code here
-
+ggplot(hikes, aes(x = elevation)) +
+  geom_density(color = "blue", fill = "orange")
 ```
 
 -   Examine the density plot. How does it compare to the histogram? What does it tell you about the *typical* elevation, *variability / range* in elevations, and *shape* of the distribution of *elevations* within this range?
 
-
+It is a similar shape to the histogram, with smoother curves. It shows where the most peaks are, but does not use counts, it uses the percentage of the total number of peaks each elevation contributes. We can see the skew more clearly. It tails off to the right. We can see the minimum and maximum elevations.
 
 ## Exercise 12: Density Plots vs Histograms
 
 The histogram and density plot both allow us to visualize the behavior of a quantitative variable: typical outcome, variability / range, shape, and outliers. What are the pros/cons of each? What do you like/not like about each?
 
+For large amounts of data points, density is better as relative sizes are distinguished. For small amounts, histograms work better for communicating areas with more data points. Both roughly show the same max and min, density with slightly more precision. The shape is shown better with density. Outliers probably show up with histograms better.
 
 ## Exercise 13: Code = communication
 
 We *obviously* won't be done until we talk about communication. All code above has a similar *general* structure (where the details can change):
 
 ```{r}
-#| eval: false
-
-ggplot(___, aes(x = ___)) + 
-  geom___(color = "___", fill = "___") + 
-  labs(x = "___", y = "___")
+# <!-- #| eval: false -->
+# 
+# <!-- ggplot(___, aes(x = ___)) + -->
+# <!--   geom___(color = "___", fill = "___") + -->
+# <!--   labs(x = "___", y = "___") -->
+# <!-- ``` -->
 ```
-
 -   Though not *necessary* to the code working, it's common, good practice to *indent* or *tab* the lines of code after the first line (counterexample below). Why?
+
+it clarifies the stream of code, and breaks it up into groups
 
 ```{r}
 # YUCK
@@ -348,6 +368,9 @@ labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
 
 -   Though not *necessary* to the code working, it's common, good practice to put a *line break* after each `+` (counterexample below). Why?
+
+You can see how many things the code is running more clearly. You aren't getting lost in a scroll. It will
+have less syntax errors too because you can keep track of parentheses.
 
 ```{r}
 # YUCK 
@@ -363,10 +386,14 @@ Practice your viz skills to learn about some of the variables in one of the foll
 
 ```{r}
 # Data on students in this class
-#survey <- read.csv("../data/survey.csv")
+survey <- read.csv("https://hash-mac.github.io/ds112site-f26/data/survey.csv")
 
 # World Cup data
-#world_cup <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-29/worldcups.csv")
+world_cup <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-29/worldcups.csv")
+
+world_cup |>
+  ggplot(aes(y = goals_scored, x = games)) +
+    geom_point(color = "blue")
 ```
 
 #### Part b
