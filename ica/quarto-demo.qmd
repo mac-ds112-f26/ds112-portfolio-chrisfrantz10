@@ -118,3 +118,16 @@ temperature_c <- 10
 temperature_f <- temperature_c * 9/5 + 32
 temperature_f
 ```
+
+```{r}
+library(tidyverse)
+demo <- read.csv("https://mac-stat.github.io/data/high_peaks.csv")
+ggplot(demo, aes(x = rating)) +
+geom_bar()
+```
+
+```{r}
+demo <- read.csv("https://mac-stat.github.io/data/high_peaks.csv")
+ggplot(demo, aes(x = elevation)) +
+geom_density()
+```
