@@ -313,9 +313,13 @@ ggplot(elections, aes(x = repub_pct_20, fill = historical)) +
 We've now learned 3 (of many) ways to visualize the relationship between a quantitative and categorical variable: side-by-side violins, boxplots, and density plots.
 
 -   Which do you like best?
--   What is one pro of density plots relative to boxplots?
--   What is one con of density plots relative to boxplots?
+> I like density plots
 
+-   What is one pro of density plots relative to boxplots?
+> Density plots show relative distribution more specifically
+
+-   What is one con of density plots relative to boxplots?
+> Outliers are shown clearly in boxplots.
 
 ## Exercise 11: Categorical vs Categorical: Intuition Check
 
@@ -333,14 +337,15 @@ Spend at most 5 minutes on the following intuition check. Adjust the code below 
 
 ```{r}
 # Plot 1: adjust this to recreate the top plot
-ggplot(elections, aes(x = historical)) +
+ggplot(elections, aes(x = historical, fill = winner_20)) +
   geom_bar()
 ```
 
 ```{r}
 # Plot 2: adjust this to recreate the bottom plot
 ggplot(elections, aes(x = winner_20)) +
-  geom_bar()
+  geom_bar() + 
+  facet_wrap(~historical)
 ```
 
 
@@ -354,6 +359,7 @@ Construct the following 4 bar plot visualizations.
 ggplot(elections, aes(x = historical, fill = winner_20)) +
   geom_bar()
 ```
+> historical is the x axis category and the winner is separated within thise categories
 
 ```{r}
 # A faceted bar plot
@@ -379,11 +385,12 @@ ggplot(elections, aes(x = historical, fill = winner_20)) +
 #### Part a
 
 Name one pro and one con of using the "proportional bar plot" instead of one of the other three options.
+> You lose total counts but gain relative proportions
 
 #### Part b
 
 What's your favorite bar plot from part and why?
-
+> I like the side by side plot because I can see total counts and roughly how close the proportions are.
 
 ## Exercise 13: Optional Practice
 
@@ -408,22 +415,21 @@ Reflect before doing anything. What types of variables are these? How might you 
 
 ```{r}
 # How do 3pm temperatures (temp3pm) differ by location?
-
-
-
+ggplot(weather, aes(x = temp3pm, fill = location)) +
+  geom_histogram() +
+  facet_wrap(~location)
 ```
 
 ```{r}
 # How might we predict the 3pm temperature (temp3pm) by the 9am temperature (temp9am)?
-
-
-
+ggplot(weather, aes(y = temp3pm, x = temp9am)) +
+  geom_point() 
 ```
 
 ```{r}
 # How do the number of rainy days (raintoday) differ by location?
-
-
+ggplot(weather, aes(x = raintoday, fill = location)) +
+  geom_bar()
 ```
 
 
@@ -437,6 +443,7 @@ Suppose we wanted to better understand how the 2020 Republican support varied fr
 ggplot(elections, aes(x = repub_pct_20, fill = state_abbr)) + 
   geom_density(alpha = 0.5)
 ```
+> Theres too many categories to look at.
 
 A facet wrap would also be bad!
 
@@ -480,16 +487,21 @@ ggplot(elections, aes(x = repub_pct_20, y = fct_reorder(state_abbr, repub_pct_20
 
 # YOUR TURN: color/fill the ridges according to a state's historical voting patterns 
 # and add meaningful axis labels
-
-
+ggplot(elections, aes(x = repub_pct_20, y = fct_reorder(state_abbr, repub_pct_20), fill = historical)) + 
+  geom_density_ridges(alpha = 0.5) +
+  scale_fill_manual(values = c("blue", "purple", "red"))
 ```
 
 **Follow-up questions**
 
 -   Which states tend to have the most variability in outcomes from county to county? The least?
--   What other interesting patterns do you notice?
--   Does this plot prompt any other questions?
+>MS, AL, NM tend to have a lot of variability, HI has very little.
 
+-   What other interesting patterns do you notice?
+> Red states don't have as much variabilty as blue or purple states
+
+-   Does this plot prompt any other questions?
+> Why do some blue states have a higher pctage than some red states?
 
 ## Exercise 15: State Total Outcomes (Optional)
 
@@ -516,7 +528,8 @@ BUT this isn't the easiest way to communicate or identify the changes from 1 yea
 # Start by creating a "scatterplot" of state_abbr (y-axis) by 2020 Republican support on the x-axis
 # Color the points red
 # Scroll to solutions below when you're ready
-
+ggplot(elections_by_state, aes(y = state_abbr, x = repub_pct_20)) + 
+  geom_point(color = "red")
 
 ```
 
