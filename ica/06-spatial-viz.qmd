@@ -201,6 +201,7 @@ starbucks |>
   ggplot(aes(y = Latitude, x = Longitude)) +
   geom_point(alpha = 0.2, size = 0.2)
 ```
+> There are no solid borders.
 
 ### ✏️ Add Country Background
 
