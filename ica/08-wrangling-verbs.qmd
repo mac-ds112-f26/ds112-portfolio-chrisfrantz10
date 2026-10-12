@@ -329,22 +329,24 @@ Let's talk about the last 2 verbs. `summarize()` (or equivalently `summarise()`)
 
 ```{r}
 # What does this do?
-# elections_small |> 
-#   summarize(median(repub_pct_20))
+elections_small |>
+  summarize(median(repub_pct_20))
 ```
+> It tells you the median of repub_pct_20
 
 ```{r}
 # What does this do?
-# elections_small |> 
-#   summarize(median_repub = median(repub_pct_20))
+elections_small |>
+  summarize(median_repub = median(repub_pct_20))
 ```
+> makes a new variable then tells you its median
 
 ```{r}
 # What does this do?
-# elections_small |> 
-#   summarize(median_repub = median(repub_pct_20), total_votes = sum(total_votes_20))
+elections_small |>
+  summarize(median_repub = median(repub_pct_20), total_votes = sum(total_votes_20))
 ```
-
+> tells you the median of the new variable and also sum of the total votes
 
 
 ### ✏️ Try `summarize` + `group_by`
@@ -353,20 +355,20 @@ Let's talk about the last 2 verbs. `summarize()` (or equivalently `summarise()`)
 Finally, `group_by()` groups the units of observation or rows of a data frame by a specified set of variables. Alone, this function doesn't change the appearance of our dataset or seem to do anything at all:
 
 ```{r}
-# elections_small |> 
-#   group_by(state_name)
+elections_small |>
+  group_by(state_name)
 ```
 
 Though it does change the underlying structure of the dataset:
 
 ```{r}
 # Check out the structure before and after group_by
-# elections_small |> 
-#   class()
-# 
-# elections_small |> 
-#   group_by(state_name) |> 
-#   class()
+elections_small |>
+  class()
+
+elections_small |>
+  group_by(state_name) |>
+  class()
 ```
 
 Where it really shines is in partnership with `summarize()`.
@@ -374,9 +376,9 @@ Where it really shines is in partnership with `summarize()`.
 ```{r}
 # What does this do?
 # (What if we didn't use group_by?)
-# elections_small |> 
-#   group_by(state_name) |> 
-#   summarize(median_repub = median(repub_pct_20), total_votes = sum(total_votes_20)) 
+elections_small |>
+  group_by(state_name) |>
+  summarize(median_repub = median(repub_pct_20), total_votes = sum(total_votes_20))
 ```
 
 ::: {.callout-warning title="Reflect"}
@@ -397,7 +399,11 @@ Each of the next 3 exercises is a challenge. If you get really stuck, use the se
 Sort the *states* from the most to least total votes cast in 2020.
 
 ```{r}
-
+elections_small |>
+  select(state_name, total_votes_20) |>
+  group_by(state_name) |>
+  summarise(state_votes = sum(total_votes_20)) |>
+  arrange(desc(state_votes))
 ```
 
 ```{r}
@@ -411,7 +417,13 @@ Sort the *states* from the most to least total votes cast in 2020.
 In 2020, what was the total number of votes for the Democratic candidate and the total number of votes for the Republican candidate in each *state*?
 
 ```{r}
-
+elections_small |>
+  select(total_votes_20, state_name, dem_pct_20, repub_pct_20) |>
+  mutate(rep_votes_20 = round(total_votes_20 * repub_pct_20 / 100)) |>
+  mutate(dem_votes_20 = round(total_votes_20 * dem_pct_20/100)) |>
+  group_by(state_name) |>
+  summarise(state_dem_votes = sum(dem_votes_20), state_rep_votes = sum(rep_votes_20))
+  
 ```
 
 ```{r}
@@ -426,7 +438,13 @@ In 2020, what was the total number of votes for the Democratic candidate and the
 What states did the Democratic candidate win in 2020?
 
 ```{r}
-
+elections_small |>
+  select(total_votes_20, state_name, dem_pct_20, repub_pct_20) |>
+  mutate(rep_votes_20 = round(total_votes_20 * repub_pct_20 / 100)) |>
+  mutate(dem_votes_20 = round(total_votes_20 * dem_pct_20/100)) |>
+  group_by(state_name) |>
+  summarise(state_dem_votes = sum(dem_votes_20), state_rep_votes = sum(rep_votes_20)) |>
+  filter(state_dem_votes > state_rep_votes)
 ```
 
 ```{r}
@@ -451,7 +469,9 @@ You can find a codebook [here](https://github.com/rfordatascience/tidytuesday/tr
 In what years did Brazil win the World Cup?
 
 ```{r}
-
+world_cup |>
+  select(year, winner) |>
+  filter(winner == 'Brazil')
 ```
 
 
@@ -460,7 +480,10 @@ In what years did Brazil win the World Cup?
 What were the 6 World Cups with the highest attendance?
 
 ```{r}
-
+world_cup |>
+  select(year, attendance) |>
+  arrange(desc(attendance)) |>
+  head()
 ```
 
 
@@ -469,7 +492,9 @@ What were the 6 World Cups with the highest attendance?
 Construct a univariate plot of `goals_scored` (no wrangling necessary). This provides a visual summary of how the number of `goals_scored` varies from World Cup to World Cup.
 
 ```{r}
-
+world_cup |>
+  ggplot(aes(y = goals_scored)) +
+  geom_histogram()
 ```
 
 
@@ -478,7 +503,9 @@ Construct a univariate plot of `goals_scored` (no wrangling necessary). This pro
 Let's follow up the plot with some more precise numerical summaries. Calculate the min, median, and max number of `goals_scored` across all World Cups. NOTE: Visually compare these numerical summaries to what you observed in the plot.
 
 ```{r}
-
+world_cup |>
+  group_by(year) |>
+  summarise(min(goals_scored), median(goals_scored), max(goals_scored))
 ```
 
 
@@ -487,7 +514,9 @@ Let's follow up the plot with some more precise numerical summaries. Calculate t
 Construct a bivariate plot of how the number of `goals_scored` in the World Cup has changed over the years. No wrangling necessary.
 
 ```{r}
-
+world_cup |>
+  ggplot(aes(y = goals_scored, x = year)) +
+  geom_point()
 ```
 
 
@@ -496,7 +525,10 @@ Construct a bivariate plot of how the number of `goals_scored` in the World Cup 
 Our above summaries might be a bit misleading. The number of games played at the World Cup varies. Construct a bivariate plot of how the typical number of goals per game has changed over the years.
 
 ```{r}
-
+world_cup |>
+  mutate(goals_per_game = goals_scored / games) |>
+  ggplot(aes(y = goals_per_game, x = year)) +
+  geom_point()
 ```
 
 
