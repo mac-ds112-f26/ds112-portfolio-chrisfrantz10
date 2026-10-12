@@ -79,7 +79,7 @@ library(leaflet)
 
 ```{r}
 # Just a plotting frame
-leaflet(data = fave_places)
+# leaflet(data = fave_places)
 ```
 
 ```{r}
