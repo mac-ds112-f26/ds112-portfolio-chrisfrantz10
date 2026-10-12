@@ -84,24 +84,24 @@ library(leaflet)
 
 ```{r}
 # Now what do we have?
-leaflet(data = fave_places) |> 
-  addTiles()
+# leaflet(data = fave_places) |> 
+#   addTiles()
 ```
 
 ```{r}
 # Now what do we have?
 # longitude and latitude refer to the variables in our data
-leaflet(data = fave_places) |> 
-  addTiles() |> 
-  addMarkers(lng = ~longitude, lat = ~latitude)
+# leaflet(data = fave_places) |> 
+#   addTiles() |> 
+#   addMarkers(lng = ~longitude, lat = ~latitude)
 ```
 
 ```{r}
 # Since we named them "longitude" and "latitude", the function
 # automatically recognizes these variables. No need to write them!
-leaflet(data = fave_places) |> 
-  addTiles() |> 
-  addMarkers()
+# leaflet(data = fave_places) |> 
+#   addTiles() |> 
+#   addMarkers()
 ```
 
 ### ✏️ Explore Zoom Limits
@@ -120,9 +120,9 @@ We can change all sorts of details in leaflet maps.
 library(gplots)
 
 # We can add colored circles instead of markers at each location
-leaflet(data = fave_places) |> 
-  addTiles() |> 
-  addCircles(color = "red")
+# leaflet(data = fave_places) |> 
+#   addTiles() |> 
+#   addCircles(color = "red")
 ```
 
 ```{r}
@@ -130,14 +130,14 @@ leaflet(data = fave_places) |>
 # Mark locations with yellow dots
 # And connect the dots, in their order in the dataset, with green lines
 # (These green lines don't mean anything here, but would if this were somebody's travel path!)
-leaflet(data = fave_places) |>
-  addProviderTiles("USGS") |>
-  addCircles(weight = 10, opacity = 1, color = "yellow") |>
-  addPolylines(
-    lng = ~longitude,
-    lat = ~latitude,
-    color = "green"
-  )
+# leaflet(data = fave_places) |>
+#   addProviderTiles("USGS") |>
+#   addCircles(weight = 10, opacity = 1, color = "yellow") |>
+#   addPolylines(
+#     lng = ~longitude,
+#     lat = ~latitude,
+#     color = "green"
+#   )
 ```
 
 In general:
