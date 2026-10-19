@@ -312,7 +312,11 @@ Birthdays |>
 Create a new dataset named `daily_births` that includes the total number of births per day (across all states) and the corresponding day of the week, eg, Mon. NOTE: Name the column with total births so that it's easier to wrangle and plot.
 
 ```{r}
-
+daily_births <- Birthdays |>
+  group_by(date, wday) |>
+  summarise(total_births = sum(births)) |>
+  mutate(total_births) |>
+  select(total_births, wday)
 ```
 
 ### ✏️ Plot Daily Births
@@ -320,7 +324,9 @@ Create a new dataset named `daily_births` that includes the total number of birt
 Using this data, construct a plot of `births` over time, indicating the day of week.
 
 ```{r}
-
+daily_births |>
+  ggplot(aes(x = date, y = total_births, color = wday)) +
+  geom_point()
 ```
 
 
@@ -339,7 +345,12 @@ penguins |>
 Calculate the total number of births in each month and year, eg, Jan 1969, Feb 1969, .... Label month by names not numbers, eg, Jan not 1. Then, plot the births by month and comment on what you learn.
 
 ```{r}
-
+Birthdays |>
+  select(year, date, births) |>
+  group_by(year, month = month(date, label = TRUE)) |>
+  summarise(total = sum(births)) |>
+  ggplot(aes(x = month, y = total, color = year)) +
+  geom_point()
 ```
 
 ### ✏️ Plot Weekly Births by State
@@ -347,17 +358,45 @@ Calculate the total number of births in each month and year, eg, Jan 1969, Feb 1
 In 1988, calculate the total number of births per week in each state. Get rid of week "53", which isn't a complete week! Then, make a line plot of births by week for each state and comment on what you learn. For example, do you notice any seasonal trends? Are these the same in every state? Any outliers?
 
 ```{r}
+Birthdays |>
+  mutate(week = week(date)) |>
+  filter(year == 1988, week != 53) |>
+  group_by(state, week) |>
+  summarise(total = sum(births))
 
+Birthdays |>
+  mutate(week = week(date)) |>
+  filter(year == 1988, week != 53) |>
+  group_by(state, week) |>
+  summarise(total = sum(births)) |>
+  ggplot(aes(x = week, y = total, color = state)) +
+  geom_line() +
+  labs(title = "Total Births by Week by State in 1988", y = "Total Births", x = "Week")
 ```
+> The total births in each week tend to increase until around week 38 where they peak then fall back down. Around week 25 the seasonal increase happens and the total number of births starts to spike.
 
 ### ✏️ Compare MN & LA
 
 Repeat the above for just Minnesota (MN) and Louisiana (LA). MN has one of the coldest climates and LA has one of the warmest. How do their seasonal trends compare? Do you think these trends are similar in other colder and warmer states? Try it!
 
 ```{r}
+Birthdays |>
+  mutate(week = week(date)) |>
+  filter(year == 1988, week != 53, state %in% c('MN', 'LA')) |>
+  group_by(state, week) |>
+  summarise(total = sum(births))
 
+
+Birthdays |>
+  mutate(week = week(date)) |>
+  filter(year == 1988, week != 53, state %in% c('MN', 'LA')) |>
+  group_by(state, week) |>
+  summarise(total = sum(births)) |>
+  ggplot(aes(x = week, y = total, color = state)) +
+  geom_line() +
+  labs(title = "Total Births by Week by State in 1988", y = "Total Births", x = "Week")
 ```
-
+> There is still the summer/fall spike, but MN peaks sooner, around week 23 vs LA at week 35. MN also starts the year very low and increasing whereas LA starts a bit higher and decreases at the start for about 15 weeks.
 
 
 ### ✏️ Sort MA Births
@@ -365,7 +404,11 @@ Repeat the above for just Minnesota (MN) and Louisiana (LA). MN has one of the c
 Create a dataset with only births in Massachusetts (MA) in 1979 and sort the days from those with the most births to those with the fewest.
 
 ```{r}
+MA_births <- Birthdays|>
+  filter(state == "MA", year == 1979) |>
+  arrange(desc(births))
 
+head(MA_births)
 ```
 
 ### ✏️ Find Top 5 States
@@ -373,5 +416,9 @@ Create a dataset with only births in Massachusetts (MA) in 1979 and sort the day
 Make a table showing the five states with the most births between September 9, 1979 and September 12, 1979, including the 9th and 12th. Arrange the table in descending order of births.
 
 ```{r}
-
+Birthdays |>
+  group_by(state) |>
+  filter(year == 1979, month == 9, day >= 9, day <= 12) |>
+  summarize(total = sum(births)) |>
+  arrange(desc(total))
 ```
