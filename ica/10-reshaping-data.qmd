@@ -175,11 +175,9 @@ Construct and summarize a plot of how a song's Billboard ranking its 2nd week on
 
 ```{r}
 billboard |>
-  pivot_longer(cols = 4:79, names_to = "week", names_prefix = "wk", values_to = "ranking") |> 
-  head()
-  # ggplot(aes(x = ranking, y = week)) +
-  # geom_point() +
-  # geom_abline(intercept = 0, slope = 1)
+  ggplot(aes(x = wk1, y = wk2)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
 ```
 
 ### ✏️ Find Dropping Songs
@@ -187,7 +185,9 @@ billboard |>
 Use your wrangling tools to identify *which* songs are those above the line in ✏️ Plot Week 2 vs Week 1, i.e. with rankings that got worse (a bigger number) from week 1 to week 2.
 
 ```{r}
-
+billboard |>
+  filter(wk2 > wk1) |>
+  head()
 ```
 
 ### ✏️ Build `nov_1999`
@@ -199,10 +199,13 @@ Define a new dataset, `nov_1999`, which:
 
 ```{r}
 # Define nov_1999
-
+nov_1999 <- billboard |>
+  filter(date.entered == "1999-11-06") |>
+  select(-track, -date.entered)
 
 # Confirm that nov_1999 has 2 rows (songs) and 77 columns
-
+dim(nov_1999)
+head(nov_1999)
 
 ```
 
@@ -211,14 +214,20 @@ Define a new dataset, `nov_1999`, which:
 Create and discuss a visualization of the rankings (y-axis) over time (x-axis) for the 2 songs in `nov_1999`. There are hints below (if you scroll), but you're encouraged to play around and use as few hints as possible.
 
 ```{r}
-
+nov_1999 |>
+  pivot_longer(cols = 3:77, names_to = "week", names_prefix = "wk", values_to = "ranking") |>
+  mutate(week = as.numeric(week)) |>
+  ggplot(aes(x = week, y = ranking, color = artist)) +
+  geom_point()
 ```
 
 Hints:
 
 -   Should you first pivot wider or longer?
--   Once you pivot, the week number is turned into a character variable. How can you change it to a number?
+> longer
 
+-   Once you pivot, the week number is turned into a character variable. How can you change it to a number?
+> mutate(week = as.factor(week))
 
 
 ## Daily Show
@@ -238,7 +247,9 @@ In analyzing this data, you'll need to determine if and when the data needs to b
 Identify the 15 guests that appeared the most. (This isn't a very diverse guest list!)
 
 ```{r}
-
+daily |>
+  # group_by(raw_guest_list) |>
+  count(raw_guest_list)
 ```
 
 ### ✏️ Build Appearances Table
