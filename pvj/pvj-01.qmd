@@ -2,4 +2,26 @@
 title: "Personal Visualization Journey"
 ---
 
-Add content here
+```{r}
+library(tidyverse)
+
+# import data into RStudio
+
+screen_time <- read.csv("C:/Users/frant/OneDrive/Documents/GitHub/Fall 26 Stat 112/ds112-portfolio-chrisfrantz10/pvj/PVJ spreadsheet Oct 18 - 24 - Sheet1.csv")
+```
+
+Play around with some viz
+
+```{r}
+screen_time |>
+  ggplot(aes(x = Category, fill = Category)) +
+  geom_bar()
+```
+
+```{r}
+screen_time |>
+  ggplot(aes(y = Time..Minutes., fill = Category)) +
+  geom_boxplot()
+```
+
+

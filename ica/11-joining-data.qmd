@@ -303,7 +303,8 @@ dept_E <- courses |>
 What students enrolled in classes in department E? (We just want info on the students, not the classes.)
 
 ```{r}
-
+dept_E |>
+  semi_join(grades)
 ```
 
 
@@ -329,7 +330,10 @@ gpa_conversion
 How many total student enrollments are there in each department? Order from high to low.
 
 ```{r}
-
+courses |>
+  group_by(dept) |>
+  summarise(total = sum(enroll)) |>
+  arrange(desc(total))
 ```
 
 ### ✏️ Compute Student GPA
@@ -337,7 +341,10 @@ How many total student enrollments are there in each department? Order from high
 What's the grade-point average (GPA) for each student?
 
 ```{r}
-
+grades |>
+  left_join(gpa_conversion) |>
+  group_by(sid) |>
+  summarise(GPA = mean(gp, na.rm = TRUE))
 ```
 
 ### ✏️ Compute Median GPA
@@ -345,7 +352,11 @@ What's the grade-point average (GPA) for each student?
 What's the median GPA across all students?
 
 ```{r}
-
+grades |>
+  left_join(gpa_conversion) |>
+  group_by(sid) |>
+  summarise(GPA = mean(gp, na.rm = TRUE)) |>
+  summarise(medianGPA = median(GPA))
 ```
 
 ### ✏️ Find Grades Below B+
@@ -353,7 +364,10 @@ What's the median GPA across all students?
 What fraction of grades are below B+?
 
 ```{r}
-
+grades |>
+  left_join(gpa_conversion) |>
+  mutate(below_b_plus = (gp < 3.3)) |>
+  summarize(mean(below_b_plus, na.rm = TRUE))
 ```
 
 ### ✏️ Compute Instructor GPA
@@ -361,7 +375,12 @@ What fraction of grades are below B+?
 What's the grade-point average for each instructor? Order from low to high.
 
 ```{r}
-
+grades |>
+  left_join(gpa_conversion) |>
+  left_join(courses) |>
+  group_by(iid) |>
+  summarize(instGPA = mean(gp, na.rm = TRUE)) |>
+  arrange((instGPA))
 ```
 
 ### ✏️ Estimate Dept GPA
