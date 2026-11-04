@@ -6,8 +6,9 @@ title: "Personal Visualization Journey"
 library(tidyverse)
 
 # import data into RStudio
-
 screen_time <- read.csv("C:/Users/frant/OneDrive/Documents/GitHub/Fall 26 Stat 112/ds112-portfolio-chrisfrantz10/pvj/PVJ spreadsheet Oct 18 - 24 - Sheet1.csv")
+
+day_of_week_time <- read.csv("C:/Users/frant/OneDrive/Documents/GitHub/Fall 26 Stat 112/ds112-portfolio-chrisfrantz10/pvj/PVJ day of week data - Sheet1.csv")
 ```
 
 Play around with some viz
@@ -20,8 +21,76 @@ screen_time |>
 
 ```{r}
 screen_time |>
-  ggplot(aes(y = Time..Minutes., fill = Category)) +
+  ggplot(aes(y = Time_Minutes, fill = Category)) +
   geom_boxplot()
 ```
+```{r}
+screen_time|> 
+  group_by(Category) |>
+  mutate(total_min = sum(Time_Minutes)) |>
+  pivot_wider(names_from = Category, values_from = total_min) |>
+  head()
+```
 
+```{r}
+
+# 1. Load the datasets
+screen_time <- read.csv("C:/Users/frant/OneDrive/Documents/GitHub/Fall 26 Stat 112/ds112-portfolio-chrisfrantz10/pvj/PVJ spreadsheet Oct 18 - 24 - Sheet1.csv")
+
+day_of_week_time <- read.csv("C:/Users/frant/OneDrive/Documents/GitHub/Fall 26 Stat 112/ds112-portfolio-chrisfrantz10/pvj/PVJ day of week data - Sheet1.csv")
+
+
+#Standardize category names
+screen_time_clean <- screen_time |>
+  mutate(Category = recode(Category,
+      "Productivity & Finance" = "Productivity_Finance",
+      "Information & Reading" = "Info_Reading"))
+
+
+#Convert day_of_week_time into long format
+day_of_week_long <- day_of_week_time |>
+  pivot_longer(cols = -Day_of_Week, names_to = "Category", values_to = "Time_Minutes") |>
+  mutate(Day_of_Week = factor(Day_of_Week,
+      levels = c("Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat")))
+
+#Calculate weekly screen time for each category
+category_totals <- screen_time_clean |>
+  filter(!is.na(Category)) |>
+  group_by(Category) |>
+  summarise(Weekly_Total = sum(Time_Minutes, na.rm = TRUE))
+
+#Combine the datasets
+combined_data <- day_of_week_long |>
+  left_join(category_totals, by = "Category")
+
+head(combined_data)
+
+```
+
+```{r}
+# 6. Visualize screen time by day and category
+combined_data |>
+  ggplot(aes(x = Day_of_Week, y = Time_Minutes, color = Category, group = Category)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Screen Time by Day of the Week",
+    x = "Day of the Week",
+    y = "Screen Time (Minutes)",
+    color = "Category") +
+  theme_minimal()
+```
+```{r}
+combined_data |>
+  ggplot(aes(x = Day_of_Week, y = Time_Minutes, color = Category, group = Category)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Screen Time by Day of the Week",
+    x = "Day of the Week",
+    y = "Screen Time (Minutes)",
+    color = "Category") +
+  theme_minimal() +
+  facet_wrap(~ Category, scales = "free_y")
+```
 
