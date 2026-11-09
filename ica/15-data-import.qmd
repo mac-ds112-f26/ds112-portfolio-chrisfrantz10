@@ -49,7 +49,7 @@ Putting this together, use `read_csv()` with the appropriate absolute file path 
 
 ```{r}
 library(tidyverse)
-# imdb_messy <- read_csv("___")
+imdb_messy <- read_csv("C:\\Users\\frant\\OneDrive\\Documents\\GitHub\\Fall 26 Stat 112\\ds112-portfolio-chrisfrantz10\\ica\\data\\imdb_5000_messy.csv")
 ```
 
 ### ✏️ Check Working Directory
@@ -76,7 +76,7 @@ Since our .qmd analysis and .csv data live in the same project, we don't have to
 Putting this together, use `read_csv()` with the appropriate relative file path to import your data into RStudio. Save this as `imdb_temp` (`temp` for "temporary"). Convince yourself that this worked, i.e. you get the same dataset as `imdb_messy`.
 
 ```{r}
-#imdb_temp <- read_csv("___")
+imdb_temp <- read_csv("../ica/data/imdb_5000_messy.csv")
 ```
 
 ::: {.callout-tip title="File Paths"}
@@ -95,7 +95,7 @@ The "data import cheat sheet" at the top of this qmd, or Google, are handy resou
 
 ```{r}
 # Try importing only the first 5 rows
-# read_csv("___", n_max = ___)
+read_csv("https://mac-stat.github.io/data/kiva_partners2.csv", n_max = 5)
 ```
 
 ::: {.callout-tip title="Commenting/Uncommenting Code"}
@@ -116,9 +116,9 @@ Open `imdb_messy` in the spreadsheet-like viewer by typing `View(imdb_messy)` in
 Do a quick `summary()` of each variable in the dataset. *One* way to do this is below:
 
 ```{r}
-# imdb_messy |>
-#   mutate(across(where(is.character), as.factor)) |>  # convert characters to factors in order to summarize
-#   summary()
+imdb_messy |>
+  mutate(across(where(is.character), as.factor)) |>  # convert characters to factors in order to summarize
+  summary()
 ```
 
 Follow-up:
