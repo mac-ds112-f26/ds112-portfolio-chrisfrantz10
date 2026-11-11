@@ -91,6 +91,56 @@ combined_data |>
     y = "Screen Time (Minutes)",
     color = "Category") +
   theme_minimal() +
-  facet_wrap(~ Category, scales = "free_y")
+  facet_wrap(~ Category, scales = "free_y") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
+# Keep all non-entertainment categories
+other_categories <- day_of_week_long |>
+  filter(Category != "Entertainment")
+
+# Convert entertainment app data to a format compatible with the plot
+entertainment_plot <- entertainment_long |>
+  mutate(
+    Category = Entertainment_App,
+    Day_of_Week = factor("Week", levels = c(
+      "Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Week"
+    ))
+  )
+
+# Combine the data
+full_plot_data <- bind_rows(
+  other_categories,
+  entertainment_plot
+)
+
+# Plot
+ggplot(full_plot_data,
+       aes(x = Day_of_Week, y = Time_Minutes,
+           color = Category, group = Category)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Screen Time by Day of the Week",
+    x = "Day of the Week",
+    y = "Screen Time (Minutes)",
+    color = "Category"
+  ) +
+  theme_minimal() +
+  facet_wrap(~Category, scales = "free_y") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+full_plot_data |>
+  ggplot(aes(x = Day_of_Week, y = Time_Minutes, color = Category, group = Category)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Screen Time by Day of the Week",
+    x = "Day of the Week",
+    y = "Screen Time (Minutes)",
+    color = "Category") +
+  theme_minimal()
 ```
 

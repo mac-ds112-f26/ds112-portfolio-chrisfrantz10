@@ -81,3 +81,9 @@ grade_distribution |>
   ggplot(aes(x = grade, y = n)) +
     geom_col()
 ```
+
+
+```{r}
+prem <- ("https://fbref.com/en/comps/9/Premier-League-Stats#all_stats_squads_misc_for")
+```
+
